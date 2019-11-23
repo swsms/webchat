@@ -17,7 +17,7 @@ body {
     font-size: 1rem;
     line-height: 1.58;
     color: #333;
-    background-color: #f4f4f4;
+    background: #4ECDC4;
     height: 100%;
 }
 
@@ -27,7 +27,6 @@ body:before {
     position: absolute;
     top: 0;
     left: 0;
-    background: #128ff2;
     content: "";
     z-index: 0;
 }
@@ -87,21 +86,25 @@ button {
 }
 
 button.default {
-    background-color: #e8e8e8;
+    background-color: #4ECDC4;
     color: #333;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.12);
 }
 
 button.primary {
-    background-color: #128ff2;
+    background-color: #4ECDC4;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.12);
     color: #fff;
 }
 
 button.accent {
-    background-color: #ff4743;
+    background-color: #4ECDC4;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.12);
     color: #fff;
+}
+
+button:hover {
+    background-color: #28948C;
 }
 
 #username-page {
@@ -144,7 +147,7 @@ button.accent {
     margin-right: auto;
     background-color: #fff;
     box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
-    margin-top: 30px;
+    margin-top: 150px;
     height: calc(100% - 60px);
     max-height: 600px;
     position: relative;
@@ -238,7 +241,6 @@ button.accent {
 
 .chat-header h2 {
     margin: 0;
-    font-weight: 500;
 }
 
 .connecting {
