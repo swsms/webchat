@@ -2,6 +2,7 @@ package org.artb.webchat.controller
 
 import org.artb.webchat.model.ChatMessage
 import org.artb.webchat.model.MessageType
+import org.artb.webchat.utils.Constants.SERVER_SENDER
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.event.EventListener
@@ -21,22 +22,27 @@ class WSEventListener {
 
     @EventListener
     fun handleWebSocketConnectListener(event: SessionConnectedEvent) {
-        logger.info("Received a new web socket connection")
+        val sessionId = StompHeaderAccessor.wrap(event.message).sessionId
+        logger.info("Established a new web socket connection $sessionId")
     }
 
     @EventListener
     fun handleWebSocketDisconnectListener(event: SessionDisconnectEvent) {
         val headerAccessor = StompHeaderAccessor.wrap(event.message)
+        logger.info("Disconnected ${headerAccessor.sessionId}")
 
-        val username = headerAccessor.sessionAttributes?.get("username") as String
-        logger.info("User disconnected : $username")
+        val username = headerAccessor.sessionAttributes?.get("username") as String?
+        if (username != null) {
+            logger.info("User disconnected : $username")
 
-        val chatMessage = ChatMessage(
-                type=MessageType.LEAVE,
-                sender=username
-        )
+            val chatMessage = ChatMessage(
+                    type = MessageType.LEAVE,
+                    content = "$username left the chat",
+                    sender = SERVER_SENDER
+            )
 
-        messagingTemplate.convertAndSend("/topic/public", chatMessage)
+            messagingTemplate.convertAndSend("/topic/public", chatMessage)
+        }
     }
 
 }

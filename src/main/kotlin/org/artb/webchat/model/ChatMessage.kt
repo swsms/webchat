@@ -7,5 +7,12 @@ data class ChatMessage(val type: MessageType? = MessageType.CHAT,
 enum class MessageType {
     CHAT,
     JOIN,
-    LEAVE
+    LEAVE,
+
+    COMMAND_RESULT,
+    UNKNOWN_COMMAND,
+
+    AUTH_ATTEMPT,
+    AUTH_DECLINED,
+    AUTH_ACCEPTED
 }

@@ -20,9 +20,6 @@ function connect(event) {
     username = document.querySelector('#name').value.trim();
 
     if (username) {
-        usernamePage.classList.add('hidden');
-        chatPage.classList.remove('hidden');
-
         var socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
 
@@ -33,34 +30,68 @@ function connect(event) {
 
 
 function onConnected() {
-    // Subscribe to the Public Topic
-    stompClient.subscribe('/topic/public', onMessageReceived);
-
-    // Tell your username to the server
-    stompClient.send("/app/chat.addUser", {},
-        JSON.stringify({sender: username, type: 'JOIN'})
+    stompClient.subscribe('/user/queue/reply', onPersonalMessageReceived)
+    stompClient.send("/app/chat.enter", {},
+        JSON.stringify({
+            sender: 'username',
+            type: 'JOIN',
+            content: username
+        })
     );
-
-    connectingElement.classList.add('hidden');
 }
-
 
 function onError(error) {
     connectingElement.textContent = 'Could not connect to WebSocket server. Please refresh this page to try again!';
     connectingElement.style.color = 'red';
 }
 
+function onPersonalMessageReceived(payload) {
+    var message = JSON.parse(payload.body);
+
+    if (message.type === 'AUTH_ACCEPTED') {
+        showChat();
+        showServerMessageInChat(message.content);
+        stompClient.subscribe('/topic/public', onMessageReceived);
+    } else if (message.type === 'AUTH_DECLINED') {
+        stompClient.disconnect();
+    }
+}
+
+function showChat() {
+    usernamePage.classList.add('hidden');
+    chatPage.classList.remove('hidden');
+    connectingElement.classList.add('hidden');
+}
+
+function showServerMessageInChat(content) {
+    var messageElement = document.createElement('li');
+    messageElement.classList.add('event-message');
+
+    var textElement = document.createElement('p');
+    var messageText = document.createTextNode(content);
+
+    textElement.appendChild(messageText);
+    messageElement.appendChild(textElement);
+    messageArea.appendChild(messageElement);
+
+    messageArea.scrollTop = messageArea.scrollHeight;
+}
 
 function sendMessage(event) {
-    var messageContent = messageInput.value.trim();
-    if (messageContent && stompClient) {
-        var chatMessage = {
+    var content = messageInput.value.trim();
+    if (content && stompClient) {
+        var message = {
             sender: username,
             content: messageInput.value,
             type: 'CHAT'
         };
-        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
-        messageInput.value = '';
+        if (content.startsWith("/")) {
+            stompClient.send("/app/chat.command", {}, JSON.stringify(message));
+            messageInput.value = '';
+        } else {
+            stompClient.send("/app/chat.send", {}, JSON.stringify(message));
+            messageInput.value = '';
+        }
     }
     event.preventDefault();
 }
@@ -72,10 +103,8 @@ function onMessageReceived(payload) {
 
     if (message.type === 'JOIN') {
         messageElement.classList.add('event-message');
-        message.content = message.sender + ' joined!';
     } else if (message.type === 'LEAVE') {
         messageElement.classList.add('event-message');
-        message.content = message.sender + ' left!';
     } else {
         messageElement.classList.add('chat-message');
 
@@ -87,13 +116,14 @@ function onMessageReceived(payload) {
         messageElement.appendChild(avatarElement);
 
         var usernameElement = document.createElement('span');
-        var usernameText = document.createTextNode(message.sender);
+        var usernameText = document.createTextNode(message.sender + " [" + getCurrentTimeString() + "]");
         usernameElement.appendChild(usernameText);
         messageElement.appendChild(usernameElement);
     }
 
     var textElement = document.createElement('p');
     var messageText = document.createTextNode(message.content);
+
     textElement.appendChild(messageText);
 
     messageElement.appendChild(textElement);
@@ -102,6 +132,20 @@ function onMessageReceived(payload) {
     messageArea.scrollTop = messageArea.scrollHeight;
 }
 
+function getCurrentTimeString() {
+    var today = new Date();
+    return withLeadingZero(today.getHours()) + ":" +
+        withLeadingZero(today.getMinutes()) + ":" +
+        withLeadingZero(today.getSeconds());
+}
+
+function withLeadingZero(number) {
+    if (number < 10) {
+        return "0" + number;
+    } else {
+        return number;
+    }
+}
 
 function getAvatarColor(messageSender) {
     var hash = 0;

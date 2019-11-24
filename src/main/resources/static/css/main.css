@@ -221,6 +221,11 @@ button:hover {
     color: #43464b;
 }
 
+.chat-message-time {
+    color: gray;
+    font-size: 10px;
+}
+
 #messageForm .input-group input {
     float: left;
     width: calc(100% - 85px);
