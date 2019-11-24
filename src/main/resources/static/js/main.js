@@ -33,7 +33,7 @@ function onConnected() {
     stompClient.subscribe('/user/queue/reply', onPersonalMessageReceived)
     stompClient.send("/app/chat.enter", {},
         JSON.stringify({
-            sender: 'username',
+            sender: 'anonymous',
             type: 'JOIN',
             content: username
         })
