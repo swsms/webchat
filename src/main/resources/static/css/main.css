@@ -212,7 +212,7 @@ button:hover {
     text-transform: uppercase;
 }
 
-#chat-page .chat-message span {
+span {
     color: #333;
     font-weight: 600;
 }
@@ -236,6 +236,13 @@ button:hover {
     width: 80px;
     height: 38px;
     margin-left: 5px;
+}
+
+.time-element {
+    color: gray;
+    float: right;
+    font-size: 12px;
+    font-weight: normal;
 }
 
 .chat-header {

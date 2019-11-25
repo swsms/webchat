@@ -116,9 +116,16 @@ function onMessageReceived(payload) {
         messageElement.appendChild(avatarElement);
 
         var usernameElement = document.createElement('span');
-        var usernameText = document.createTextNode(message.sender + " [" + getCurrentTimeString() + "]");
+        var usernameText = document.createTextNode(message.sender);
         usernameElement.appendChild(usernameText);
+
+        var timeElement = document.createElement('span');
+        var timeText = document.createTextNode(getCurrentTimeString());
+        timeElement.appendChild(timeText);
+        timeElement.classList.add('time-element');
+
         messageElement.appendChild(usernameElement);
+        messageElement.appendChild(timeElement);
     }
 
     var textElement = document.createElement('p');
