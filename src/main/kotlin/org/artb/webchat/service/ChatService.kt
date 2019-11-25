@@ -38,8 +38,11 @@ class ChatService {
     }
 
     fun removeUserFromChat(sessionId: String) {
-        val username = userStorage.removeUserBySessionId(sessionId)!!
-        messagingTemplate.convertAndSend(PUBLIC_TOPIC_DEST, prepareUserLeftChatMessage(username))
+        userStorage.removeUserBySessionId(sessionId)?.let {
+            messagingTemplate.convertAndSend(
+                    PUBLIC_TOPIC_DEST,
+                    prepareUserLeftChatMessage(it))
+        }
     }
 
 }

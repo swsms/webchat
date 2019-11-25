@@ -2,12 +2,15 @@ package org.artb.webchat.storage
 
 import org.artb.webchat.exceptions.InvalidUsernameException
 import org.springframework.stereotype.Component
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+
 
 @Component
 class InMemoryUserStorage: UserStorage {
 
     private val sessionIdToUsernameMap = ConcurrentHashMap<String, String>()
+    private val lockedNames = Collections.newSetFromMap<String>(ConcurrentHashMap())
 
     override fun getUserBySessionId(sessionId: String): String? {
         return sessionIdToUsernameMap[sessionId]
@@ -21,12 +24,19 @@ class InMemoryUserStorage: UserStorage {
         return sessionIdToUsernameMap.values
     }
 
-    // TODO avoid duplicate names by locking
     override fun addUser(sessionId: String, username: String) {
-        if (getAllUsers().contains(username)) {
+        if (!lockedNames.add(username)) {
             throw InvalidUsernameException(
                     "The name $username is already taken")
         }
-        sessionIdToUsernameMap[sessionId] = username
+        try {
+            if (getAllUsers().contains(username)) {
+                throw InvalidUsernameException(
+                        "The name $username is already taken")
+            }
+            sessionIdToUsernameMap[sessionId] = username
+        } finally {
+            lockedNames.remove(username)
+        }
     }
 }
