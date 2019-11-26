@@ -19,8 +19,6 @@ import org.springframework.stereotype.Controller
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler
 
 
-
-
 @Controller
 class ChatController {
     private val logger = LoggerFactory.getLogger(ChatController::class.java)
