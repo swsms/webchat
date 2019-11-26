@@ -24,6 +24,14 @@ class InMemoryUserStorage: UserStorage {
         return sessionIdToUsernameMap.values
     }
 
+    override fun containsUsername(username: String): Boolean {
+        return sessionIdToUsernameMap.containsValue(username)
+    }
+
+    override fun containsSessionId(sessionId: String): Boolean {
+        return sessionIdToUsernameMap.containsKey(sessionId)
+    }
+
     override fun addUser(sessionId: String, username: String) {
         if (!lockedNames.add(username)) {
             throw InvalidUsernameException(

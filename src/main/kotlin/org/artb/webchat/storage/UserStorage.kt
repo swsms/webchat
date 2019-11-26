@@ -9,4 +9,8 @@ interface UserStorage {
     fun getAllUsers(): Collection<String>
 
     fun addUser(sessionId: String, username: String)
+
+    fun containsUsername(username: String): Boolean
+
+    fun containsSessionId(sessionId: String): Boolean
 }

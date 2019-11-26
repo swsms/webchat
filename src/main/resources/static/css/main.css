@@ -184,6 +184,16 @@ button:hover {
     clear: both;
 }
 
+#chat-page .error-message {
+    width: 100%;
+    clear: both;
+}
+
+#chat-page .error-message p {
+    color: #FFCCCC;
+}
+
+
 #chat-page .event-message p {
     color: #777;
     font-size: 14px;

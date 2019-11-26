@@ -3,7 +3,9 @@ package org.artb.webchat.service
 import org.artb.webchat.common.*
 import org.artb.webchat.common.Constants.PUBLIC_TOPIC_DEST
 import org.artb.webchat.exceptions.InvalidUsernameException
+import org.artb.webchat.exceptions.NotAuthorizedUserException
 import org.artb.webchat.model.ChatMessage
+import org.artb.webchat.model.MessageType
 import org.artb.webchat.storage.UserStorage
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -43,6 +45,17 @@ class ChatService {
                     PUBLIC_TOPIC_DEST,
                     prepareUserLeftChatMessage(it))
         }
+    }
+
+    fun broadcastMessage(sessionId: String, message: ChatMessage): ChatMessage {
+        val username = userStorage.getUserBySessionId(sessionId)
+                ?: throw NotAuthorizedUserException("User $sessionId is not authorized")
+
+        return ChatMessage(
+                type = MessageType.CHAT,
+                content = message.content,
+                sender = username
+        )
     }
 
 }

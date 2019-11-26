@@ -12,6 +12,7 @@ enum class MessageType {
     COMMAND_RESULT,
     UNKNOWN_COMMAND,
 
+    LOGIN_REQUIRED,
     AUTH_ATTEMPT,
     AUTH_DECLINED,
     AUTH_ACCEPTED

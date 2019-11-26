@@ -50,10 +50,12 @@ function onPersonalMessageReceived(payload) {
 
     if (message.type === 'AUTH_ACCEPTED') {
         showChat();
-        showServerMessageInChat(message.content);
+        showServerMessageInChat(message.content, 'event-message');
         stompClient.subscribe('/topic/public', onMessageReceived);
     } else if (message.type === 'AUTH_DECLINED') {
         stompClient.disconnect();
+    } else if (message.type === 'LOGIN_REQUIRED') {
+        showServerMessageInChat(message.content, 'error-message');
     }
 }
 
@@ -63,9 +65,9 @@ function showChat() {
     connectingElement.classList.add('hidden');
 }
 
-function showServerMessageInChat(content) {
+function showServerMessageInChat(content, style) {
     var messageElement = document.createElement('li');
-    messageElement.classList.add('event-message');
+    messageElement.classList.add(style);
 
     var textElement = document.createElement('p');
     var messageText = document.createTextNode(content);
