@@ -46,11 +46,10 @@ class ChatController {
 
     @MessageMapping("/chat.send")
     @SendTo(PUBLIC_TOPIC_DEST)
-    fun sendMessage(@Payload message: ChatMessage,
+    fun sendToAll(@Payload message: ChatMessage,
                     @Header("simpSessionId") sessionId: String): ChatMessage {
         logger.info("User ${message.sender} sends '${message.content}'")
-        service.broadcastMessage(sessionId, message)
-        return message
+        return service.broadcastMessage(sessionId, message)
     }
 
 //    @MessageMapping("/chat.command")
