@@ -10,7 +10,7 @@ enum class MessageType {
     LEAVE,
 
     COMMAND_RESULT,
-    UNKNOWN_COMMAND,
+    COMMAND_ERROR,
 
     LOGIN_REQUIRED,
     LOGIN_DECLINED,

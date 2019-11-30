@@ -56,6 +56,10 @@ function onPersonalMessageReceived(payload) {
         stompClient.disconnect();
     } else if (message.type === 'LOGIN_REQUIRED') {
         showServerMessageInChat(message.content, 'error-message');
+    } else if (message.type === 'COMMAND_ERROR') {
+        showServerMessageInChat(message.content, 'error-message');
+    } else if (message.type === 'COMMAND_RESULT') {
+        showServerMessageInChat(message.content, 'command-result');
     }
 }
 

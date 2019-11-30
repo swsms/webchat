@@ -190,9 +190,17 @@ button:hover {
 }
 
 #chat-page .error-message p {
-    color: #FFCCCC;
+    color: #CC0000;
 }
 
+#chat-page .command-result {
+    width: 100%;
+    clear: both;
+}
+
+#chat-page .command-result p {
+    color: #4BB543;
+}
 
 #chat-page .event-message p {
     color: #777;

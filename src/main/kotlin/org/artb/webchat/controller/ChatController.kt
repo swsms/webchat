@@ -7,6 +7,7 @@ import org.artb.webchat.common.Constants.PUBLIC_TOPIC_DEST
 import org.artb.webchat.common.Constants.SERVER_SENDER
 import org.artb.webchat.common.Constants.USER_QUEUE_DEST
 import org.artb.webchat.exceptions.NotAuthorizedUserException
+import org.artb.webchat.service.CommandExecutor
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.messaging.handler.annotation.Header
@@ -25,6 +26,9 @@ class ChatController {
 
     @Autowired
     private lateinit var service: ChatService
+
+    @Autowired
+    private lateinit var executor: CommandExecutor
 
     @MessageMapping("/chat.enter")
     @SendToUser(USER_QUEUE_DEST)
@@ -52,13 +56,10 @@ class ChatController {
 
     @MessageMapping("/chat.command")
     @SendToUser(USER_QUEUE_DEST)
-    fun executeCommand(@Payload message: ChatMessage): ChatMessage {
-        Thread.sleep(2000L)
-        return ChatMessage(
-                type=MessageType.JOIN,
-                content="[Vasia, Polya, Kate]",
-                sender="server"
-        );
+    fun executeCommand(@Payload message: ChatMessage,
+                       @Header("simpSessionId") sessionId: String): ChatMessage {
+        logger.info("Incoming command $message from $sessionId")
+        return executor.execute(message)
     }
 
     @MessageExceptionHandler
