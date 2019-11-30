@@ -29,7 +29,7 @@ fun prepareUserLeftChatMessage(username: String): ChatMessage {
 
 fun prepareSuccessfullyLoggedMessage(username: String): ChatMessage {
     return ChatMessage(
-            type = MessageType.AUTH_ACCEPTED,
+            type = MessageType.LOGIN_ACCEPTED,
             content = "You have successfully logged as $username",
             sender = Constants.SERVER_SENDER
     )
@@ -37,7 +37,7 @@ fun prepareSuccessfullyLoggedMessage(username: String): ChatMessage {
 
 fun prepareDeclinedMessage(reason: String?): ChatMessage {
     return ChatMessage(
-            type = MessageType.AUTH_DECLINED,
+            type = MessageType.LOGIN_DECLINED,
             content = reason,
             sender = Constants.SERVER_SENDER
     )

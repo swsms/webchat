@@ -48,11 +48,11 @@ function onError(error) {
 function onPersonalMessageReceived(payload) {
     var message = JSON.parse(payload.body);
 
-    if (message.type === 'AUTH_ACCEPTED') {
+    if (message.type === 'LOGIN_ACCEPTED') {
         showChat();
         showServerMessageInChat(message.content, 'event-message');
         stompClient.subscribe('/topic/public', onMessageReceived);
-    } else if (message.type === 'AUTH_DECLINED') {
+    } else if (message.type === 'LOGIN_DECLINED') {
         stompClient.disconnect();
     } else if (message.type === 'LOGIN_REQUIRED') {
         showServerMessageInChat(message.content, 'error-message');

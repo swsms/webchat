@@ -34,7 +34,7 @@ class ChatController {
         logger.info("New entering message: $message")
 
         val resultMessage = service.addUserToChat(sessionId, message.content)
-        if (resultMessage.type == MessageType.AUTH_ACCEPTED) {
+        if (resultMessage.type == MessageType.LOGIN_ACCEPTED) {
             headerAccessor.sessionAttributes?.set("username", message.content)
             headerAccessor.sessionId=sessionId;
         }
@@ -50,16 +50,16 @@ class ChatController {
         return service.broadcastMessage(sessionId, message)
     }
 
-//    @MessageMapping("/chat.command")
-//    @SendToUser(USER_QUEUE_DEST)
-//    fun executeCommand(@Payload message: ChatMessage): ChatMessage {
-//        Thread.sleep(2000L)
-//        return ChatMessage(
-//                type=MessageType.JOIN,
-//                content="[Vasia, Polya, Kate]",
-//                sender="server"
-//        );
-//    }
+    @MessageMapping("/chat.command")
+    @SendToUser(USER_QUEUE_DEST)
+    fun executeCommand(@Payload message: ChatMessage): ChatMessage {
+        Thread.sleep(2000L)
+        return ChatMessage(
+                type=MessageType.JOIN,
+                content="[Vasia, Polya, Kate]",
+                sender="server"
+        );
+    }
 
     @MessageExceptionHandler
     @SendToUser(USER_QUEUE_DEST)
